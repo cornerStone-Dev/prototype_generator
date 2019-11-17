@@ -46,7 +46,9 @@ convertToJson(biblestudy1);
 	printf("syntax_error\n");
 	parser_state->status = -1;
 	parser_state->num_members=0;
-	while( yypParser->yytos>yypParser->yystack ) yy_pop_parser_stack(yypParser);
+	if (parser_state->begin_attrs==0){
+		while( yypParser->yytos>yypParser->yystack ) yy_pop_parser_stack(yypParser);
+	}
 }
 
 //%left ATSIGN.
@@ -61,6 +63,13 @@ func ::=  type funcname paramlist RPAREN LBLOCK. {
 	//parser_state->status = 1;
 	parser_state->func_found = 1;
 }
+func ::=  type funcname paramlist RPAREN beginattrs RATTR LBLOCK. {
+	printf("type accepted\n");
+	//parser_state->status = 1;
+	parser_state->func_found = 1;
+}
+
+beginattrs ::= LATTR(A). {parser_state->begin_attrs=1;printf("beginattrs = %d\n", parser_state->begin_attrs);parser_state->start_attr=A;}
 
 funcname ::= IDENT LPAREN.
 
@@ -72,9 +81,10 @@ param ::= idlist ptr idlist.
 param ::= idlist LBRACKET RBRACKET.
 param ::= idlist.
 
-//type ::= idlist(A) ptr idlist. {start_func = A;}
+// works, eats invalid stuff but oh well compiler will choke anyway
+// *bad* type ::= idlist(A) ptr idlist. {start_func = A;}
 type ::= type ATSIGN.        //{start_func = A;}
-//type ::= idlist(A).            //{start_func = A;}
+// *bad* type ::= idlist(A).            //{start_func = A;}
 type ::= type IDENT.
 type ::= IDENT(A).                {parser_state->start_func = A;}
 

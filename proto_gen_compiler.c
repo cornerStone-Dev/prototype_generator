@@ -16,9 +16,11 @@ typedef struct parser_s{
 	u8 * type_name;
 	u8 * member_name[50];
 	u8 * start_func;
+	u8 * start_attr;
 	s32 status;
 	s32 func_found;
 	s32 num_members;
+	s32 begin_attrs;
 } ParserState;
 
 
@@ -198,49 +200,6 @@ int main(int argc, char **argv)
 	unsigned char * buffer;
 	size_t result;
 	
-
-	/* output generic funtions */
-	output+=sprintf((char*)output, 
-	"#define FMT(x) _Generic((x), \\\n"
-    "char: \"%%c\", \\\n"
-    "signed char: \"%%hhd\", \\\n"
-    "unsigned char: \"%%hhu\", \\\n"
-    "signed short: \"%%hd\", \\\n"
-    "unsigned short: \"%%hu\", \\\n"
-    "signed int: \"%%d\", \\\n"
-    "unsigned int: \"%%u\", \\\n"
-    "long int: \"%%ld\", \\\n"
-    "unsigned long int: \"%%lu\", \\\n"
-    "long long int: \"%%lld\", \\\n"
-    "unsigned long long int: \"%%llu\", \\\n"
-    "float: \"%%f\", \\\n"
-    "double: \"%%f\", \\\n"
-    "long double: \"%%Lf\", \\\n"
-    "char *: \"\\\"%%s\\\"\", \\\n"
-	"unsigned char *: \"\\\"%%s\\\"\", \\\n"
-	"const char *: \"\\\"%%s\\\"\", \\\n"
-	"const unsigned char *: \"\\\"%%s\\\"\", \\\n"
-    "void *: \"%%p\")\n");
-	
-	output+=sprintf((char*)output, 
-	"#define NP_C(x) _Generic((x), \\\n"
-    "char: 1, \\\n"
-    "signed char: 1, \\\n"
-    "unsigned char: 1, \\\n"
-    "signed short: 1, \\\n"
-    "unsigned short: 1, \\\n"
-    "signed int: 1, \\\n"
-    "unsigned int: 1, \\\n"
-    "long int: 1, \\\n"
-    "unsigned long int: 1, \\\n"
-    "long long int: 1, \\\n"
-    "unsigned long long int: 1, \\\n"
-    "float: 1, \\\n"
-    "double: 1, \\\n"
-    "long double: 1, \\\n"
-	"default: 0)\n");
-	
-	
 	pFile = fopen ( INTPUT_FILE, "rb" );
 	if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
 	
@@ -266,7 +225,7 @@ int main(int argc, char **argv)
 	
 	pParser = ParseAlloc( malloc, &parser_state );
 	
-	//ParseTrace(stdout, "debug:: ");
+	ParseTrace(stdout, "debug:: ");
 
 	printf("starting parse\n");
 	parser_state.status = 0;
@@ -281,11 +240,19 @@ int main(int argc, char **argv)
 			parser_state.status = 0;
 			
 		} /*else*/ if (parser_state.func_found == 1) {
+			parser_state.func_found = 0;
 			/* parser has found a type */
 			//semantic_actions(&context, &output_string);
 			//semantic_actions_Wstate(&parser_state, output);
 			output = (uint8_t *)stpcpy((char *)output, parser_state.start_func);
-			output = (uint8_t *)stpcpy((char *)output, ";");
+			printf("begin_attrs = %d\n", parser_state.begin_attrs);
+			if (parser_state.begin_attrs==1) {
+				parser_state.begin_attrs = 0;
+				output = (uint8_t *)stpcpy((char *)output, "__attribute__((");
+				output = (uint8_t *)stpcpy((char *)output, parser_state.start_attr);
+				output = (uint8_t *)stpcpy((char *)output, "))");
+			}
+			output = (uint8_t *)stpcpy((char *)output, ";\n");
 			printf("function = %s\n", parser_state.start_func);
 			fwrite (output_string , sizeof(char), strlen((const char *)output_string), outputFile);
 			

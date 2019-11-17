@@ -6,17 +6,20 @@
 /*!max:re2c*/                        // directive that defines YYMAXFILL (unused)
 /*!re2c                              // start of re2c block
     
-	mcm = "/*" ([^*] | ("*" [^/]))* "*""/";
+	mcm = "/*" [^@] ([^*] | ("*" [^/]))* [^@] "*""/";
     scm = "//" [^\n]* "\n";
     wsp = ([ \t\v\n\r] | scm | mcm)+;
 	lblock =   "{";
 	lparen =   "(";
 	rparen =   ")";
-	lbracket =   "[";
-	rbracket =   "]";
-	comma =     ",";
+	lbracket = "[";
+	rbracket = "]";
+	lattr =    "/*@";
+	rattr =    "@*/";
+	comma =    ",";
 	atstar = ("@" | "*");
 	id = [a-zA-Z_][a-zA-Z_0-9]*;
+
 	
 */                                   // end of re2c block
 
@@ -45,8 +48,8 @@ loop: // label for looping within the lexxer
     }
 	
 	lblock {
-        //printf("lblock\n"); 
-        *(c->string_end) = 0; 
+        //printf("lblock\n");
+        *(c->string_end) = 0;
 		*YYCURSOR_p = YYCURSOR;
 		return LBLOCK;
     }
@@ -75,10 +78,25 @@ loop: // label for looping within the lexxer
 		*YYCURSOR_p = YYCURSOR;
 		return RBRACKET;
     }
+    
+    lattr {
+        //printf("rblock\n");
+        *(c->string_end) = 0;
+        c->string_start = (u8 *)YYCURSOR;
+		*YYCURSOR_p = YYCURSOR;
+		return LATTR;
+    }
+    
+    rattr {
+        //printf("rblock\n");  
+        c->string_end = (u8 *)(YYCURSOR-3);
+		*YYCURSOR_p = YYCURSOR;
+		return RATTR;
+    }
 	
 	comma {
 		// record an atstar 
-		*(c->string_end) = 0;
+		//*(c->string_end) = 0;
         //printf("semi\n");  
 		*YYCURSOR_p = YYCURSOR;
 		return COMMA;
