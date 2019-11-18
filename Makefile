@@ -38,4 +38,6 @@ protogen:
 	mkdir protogen
 
 clean:
-	rm bin/protoGenCompiler
+	rm -f bin/protoGenCompiler
+	rm -f tool_output/proto_gen_gram.c
+	rm -f tool_output/proto_gen_lex.c
