@@ -7,3 +7,4 @@ test/
 tool/
 tool_output/
 protogen/
+*.geany

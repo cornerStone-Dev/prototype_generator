@@ -85,8 +85,9 @@ int main(int argc, char **argv)
 		//printf("Got in\n");
 		if ( (strstr(dir->d_name, ".c")!=0) ) {
 		//printf("%s\n", dir->d_name);
+		output = (uint8_t *)stpcpy((char *)output, "/* ");
 		output = (uint8_t *)stpcpy((char *)output, dir->d_name);
-		output = (uint8_t *)stpcpy((char *)output, "\n");
+		output = (uint8_t *)stpcpy((char *)output, " */\n");
 
 		pFile = fopen ( dir->d_name, "rb" );
 		if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
