@@ -1,5 +1,5 @@
 
-all: bin input output tool tool_output protogen bin/protoGenCompiler
+all: bin tool tool_output protogen bin/protoGenCompiler
 
 bin/protoGenCompiler: proto_gen_compiler.c tool_output/proto_gen_gram.c tool_output/proto_gen_lex.c
 	gcc -O2 -s -o bin/protoGenCompiler proto_gen_compiler.c -Wall
@@ -21,12 +21,6 @@ tool_output/proto_gen_lex.c: proto_gen_lex.re
 
 bin:
 	mkdir bin
-
-input:
-	mkdir input
-
-output:
-	mkdir output
 
 tool:
 	mkdir tool
