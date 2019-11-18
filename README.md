@@ -1,13 +1,11 @@
 # proto_gen_parsing
 
-This will generate an .h file with prototypes for you.
+This will generate an .h file with prototypes for you based on all ".c" files in current directory. It places prototypes.h into protogen/ local directory.
 
-Requires gcc, make, and re2c. If on Ubunutu intall build-essential and re2c.
+Requires local directory protogen/, gcc, make, and re2c. If on Ubunutu intall build-essential and re2c.
 
-Uses lemon and sqlite3, but the Makefile will take care of that for you.
+Uses lemon, but the Makefile will take care of that for you.
 
 Clone from git, then `$ make`
 
 Browse the Makefile for more information.
-
->No code actually using sqlite 3 yet.
