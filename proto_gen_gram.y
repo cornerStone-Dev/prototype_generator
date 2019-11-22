@@ -62,5 +62,3 @@ idlist ::= IDENT.
 ptr ::= ptr STAR.
 ptr ::= STAR.
 
-
-

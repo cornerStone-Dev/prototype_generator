@@ -6,6 +6,7 @@ bin/protoGenCompiler: proto_gen_compiler.c tool_output/proto_gen_gram.c tool_out
 
 tool_output/proto_gen_gram.c: tool/lemon proto_gen_gram.y
 	./tool/lemon proto_gen_gram.y -s -dtool_output
+	sed -i 's/void Parse/static void Parse/g' tool_output/proto_gen_gram.c
 
 tool/lemon: tool/lemon.c tool/lempar.c
 	gcc -O2 tool/lemon.c -o tool/lemon
@@ -17,7 +18,7 @@ tool/lempar.c:
 	curl https://raw.githubusercontent.com/sqlite/sqlite/master/tool/lempar.c > tool/lempar.c
 
 tool_output/proto_gen_lex.c: proto_gen_lex.re
-	re2c -W proto_gen_lex.re -o tool_output/proto_gen_lex.c
+	re2c -W --eager-skip proto_gen_lex.re -o tool_output/proto_gen_lex.c
 
 bin:
 	mkdir bin

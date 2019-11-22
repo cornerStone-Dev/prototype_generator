@@ -9,6 +9,7 @@
 #include "std_types.h"
 
 #define NDEBUG
+#define Parse_ENGINEALWAYSONSTACK
 
 typedef struct context_s{
 	u8 * string_start;
@@ -35,10 +36,12 @@ int main(int argc, char **argv)
 {
 	
 	const unsigned char * data;
+	void *pEngine;                  /* The LEMON-generated LALR(1) parser */
+	yyParser sEngine;    /* Space to hold the Lemon-generated Parser object */
 	unsigned char output_string[4096] = {0};
 	unsigned char * output = output_string;
 	Context context = {0};
-	void *pParser;
+	/*void *pParser;*/
 	int tmp_token;
 	ParserState parser_state = {0};
 	FILE * pFile, * outputFile;
@@ -52,7 +55,9 @@ int main(int argc, char **argv)
 	outputFile = fopen ( OUTPUT_FILE, "w" );
 	if (outputFile==NULL) {fputs ("File error",stderr); exit (1);}
 	
-	pParser = ParseAlloc( malloc, &parser_state );
+	/*pParser = ParseAlloc( malloc, &parser_state );*/
+	pEngine = &sEngine;
+	ParseInit(pEngine, &parser_state);
 	
 	// debug
 	//~ /* open current directory */
@@ -118,7 +123,7 @@ int main(int argc, char **argv)
 		do {
 			tmp_token = lex(&data, &context);
 
-			Parse(pParser, tmp_token, context.string_start);
+			Parse(pEngine, tmp_token, context.string_start);
 			 
 			if (parser_state.func_found == 1) {
 				parser_state.func_found = 0;
@@ -155,7 +160,8 @@ int main(int argc, char **argv)
 	fclose (outputFile);
 	
 	/* free parser memory */
-	ParseFree(pParser, free );
+	/*ParseFree(pParser, free );*/
+	ParseFinalize(pEngine);
 	
     return 0;
 }

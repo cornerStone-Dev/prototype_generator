@@ -108,9 +108,7 @@ loop: // label for looping within the lexxer
 		*YYCURSOR_p = YYCURSOR;
 		return IDENT;
     }
-                                     //
     */                               // end of re2c block
 }  
-
 
 
