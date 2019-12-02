@@ -36,8 +36,8 @@ int main(int argc, char **argv)
 {
 	
 	const unsigned char * data;
-	void *pEngine;                  /* The LEMON-generated LALR(1) parser */
-	yyParser sEngine;    /* Space to hold the Lemon-generated Parser object */
+	void *pEngine;     /* The LEMON-generated LALR(1) parser */
+	yyParser sEngine;  /* Space to hold the Lemon-generated Parser object */
 	unsigned char output_string[4096] = {0};
 	unsigned char * output = output_string;
 	Context context = {0};
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	//~ closedir(d);
 	
 	/* open current directory */
-	d = opendir(".");
+	d = opendir("src");
 	if (d==0)
     {
 		//printf("NO DIR!!!\n");
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 		//printf("Got in\n");
 		if ( (strstr(dir->d_name, ".c")!=0) ) {
 		//printf("%s\n", dir->d_name);
-		output = (uint8_t *)stpcpy((char *)output, "/* ");
+		output = (uint8_t *)stpcpy((char *)output, "/* src/");
 		output = (uint8_t *)stpcpy((char *)output, dir->d_name);
 		output = (uint8_t *)stpcpy((char *)output, " */\n");
 
@@ -117,8 +117,9 @@ int main(int argc, char **argv)
 		/* null terminate buffer */
 		buffer[lSize]=0;
 		
-		//ParseTrace(stdout, "debug:: ");
-
+#ifndef NDEBUG
+		ParseTrace(stdout, "debug:: ");
+#endif
 		//printf("starting parse\n");
 		do {
 			tmp_token = lex(&data, &context);
