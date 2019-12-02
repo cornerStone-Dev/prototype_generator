@@ -1,5 +1,5 @@
 
-all: bin tool tool_output protogen bin/protoGenCompiler
+all: bin tool tool_output gen bin/protoGenCompiler
 
 bin/protoGenCompiler: proto_gen_compiler.c tool_output/proto_gen_gram.c tool_output/proto_gen_lex.c
 	gcc -O2 -s -o bin/protoGenCompiler proto_gen_compiler.c -Wall
@@ -29,8 +29,8 @@ tool:
 tool_output:
 	mkdir tool_output
 
-protogen:
-	mkdir protogen
+gen:
+	mkdir gen
 
 clean:
 	rm -f bin/protoGenCompiler

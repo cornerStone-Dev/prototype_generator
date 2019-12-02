@@ -39,6 +39,7 @@ int main(int argc, char **argv)
 	void *pEngine;     /* The LEMON-generated LALR(1) parser */
 	yyParser sEngine;  /* Space to hold the Lemon-generated Parser object */
 	unsigned char output_string[4096] = {0};
+	unsigned char file_name_buff[512] = {0};
 	unsigned char * output = output_string;
 	Context context = {0};
 	/*void *pParser;*/
@@ -93,8 +94,10 @@ int main(int argc, char **argv)
 		output = (uint8_t *)stpcpy((char *)output, "/* src/");
 		output = (uint8_t *)stpcpy((char *)output, dir->d_name);
 		output = (uint8_t *)stpcpy((char *)output, " */\n");
+		
+		sprintf((char *)file_name_buff, "src/%s", dir->d_name);
 
-		pFile = fopen ( dir->d_name, "rb" );
+		pFile = fopen ( (char *)file_name_buff, "rb" );
 		if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
 		
 		

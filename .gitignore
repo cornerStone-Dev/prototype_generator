@@ -7,4 +7,6 @@ test/
 tool/
 tool_output/
 protogen/
+src/
+gen/
 *.geany
