@@ -28,7 +28,7 @@ typedef struct parser_s{
 #include "tool_output/proto_gen_gram.c"
 
 //#define INTPUT_FILE "input/weeklystat.c"
-#define OUTPUT_FILE "protogen/prototypes.h"
+#define OUTPUT_FILE "gen/prototypes.h"
 
 
 
